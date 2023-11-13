@@ -4,9 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuardGift Home</title>
+    <style>
+        body {
+            text-align: center; /* Centers the content */
+            margin-top: 50px; /* Adds some space at the top of the page */
+        }
+
+        .friend-link {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+            .friend-link:hover {
+                background-color: #45a049;
+            }
+    </style>
 </head>
 <body>
-    <h1>Hi</h1>
-    <a href="/signup">Sign Up</a>
+    <h1>Home Page</h1>
+    <a href="/friends" class="friend-link">Go to Friend List</a>
+    <a href="/signup" class="friend-link">Sign Up Here</a>
 </body>
 </html>
