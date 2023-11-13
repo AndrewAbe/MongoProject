@@ -10,6 +10,10 @@ def home():
 def signup():
     return render_template('signup.html')
 
+@app.route('/friends')
+def friends():
+    return render_template('friends.html')
+
 if __name__ == '__main__':
     cert_path = "C:\\Users\\raemu\\Desktop\\MasterProj\\HTTPS Certs\\cert.pem"
     key_path = "C:\\Users\\raemu\\Desktop\\MasterProj\\HTTPS Certs\\key.pem"
