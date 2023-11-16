@@ -2,25 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friend List</title>
+    <title>All Users</title>
 </head>
 <body>
-    <h1>Friend List</h1>
-    <ul id="friendList"></ul>
-
-    <script>
-        fetch('http://localhost:3000/friends')
-            .then(response => response.json())
-            .then(data => {
-                const list = document.getElementById('friendList');
-                data.forEach(user => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = user.firstName;
-                    list.appendChild(listItem);
-                });
-            })
-            .catch(error => console.error('Error:', error));
-    </script>
+    <h1>Friends List</h1>
+    <ul>
+        {% for user in users %}
+        <li>{{ user['firstName'] }} {{ user['lastName'] }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
