@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 def is_password_strong(password):
@@ -24,6 +24,7 @@ def is_password_strong(password):
     return True
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Set a secret key for message flashing
 
 client = MongoClient('localhost', 27017)
 db = client.test
@@ -31,6 +32,25 @@ db = client.test
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Find user by username
+        user = db.users.find_one({'username': username})
+
+        if user and check_password_hash(user['password'], password):
+            # If the username and hashed password match, redirect to home or another page
+            return redirect(url_for('home'))
+        else:
+            # If they don't match, flash a message and reload the login page
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+
+    return render_template('login.html')
 
 @app.route('/friends')
 def friends():
