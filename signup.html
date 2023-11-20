@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 0 auto;
+            width: auto; /* Adjust width as needed */
+        }
+        .form-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Signup Form</h1>
+        <p>Passwords must be at least 8 characters long and include uppercase and lowercase letters, a number, and a special character.</p>
+        <p>You must be at least 10 years old to sign up.</p>
+        <form action="{{ url_for('signup') }}" method="post">
+            <div class="form-item">
+                <input type="text" name="first_name" placeholder="First Name" required>
+            </div>
+            <div class="form-item">
+                <input type="text" name="last_name" placeholder="Last Name" required>
+            </div>
+            <div class="form-item">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-item">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="form-item">
+                <input type="tel" name="phone_number" placeholder="Phone Number" pattern="[0-9]{10}" title="Enter a 10-digit phone number" required><br>
+            </div>
+            <div class="form-item">
+                <input type="text" name="address" placeholder="Address" required>
+            </div>
+            <div class="form-item">
+                <input type="date" name="dob" placeholder="Date of Birth" required>
+            </div>
+            <div class="form-item">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-item">
+                <button type="submit">Sign Up</button>
+            </div>
+        </form>
+    </div>
+    <a href="/">Go Back to Home</a>
+</body>
+</html>
+
+<!--
+    <h1>Signup Form</h1>
+    <form action="{{ url_for('signup') }}" method="post">
+        <input type="text" name="first_name" placeholder="First Name" required><br>
+        <input type="text" name="last_name" placeholder="Last Name" required><br>
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="tel" name="phone_number" placeholder="Phone Number" pattern="[0-9]{10}" title="Enter a 10-digit phone number" required><br>
+        <input type="text" name="address" placeholder="Address" required><br>
+        <input type="date" name="dob" placeholder="Date of Birth" required><br>
+        <p>Passwords must be at least 8 characters long and include uppercase and lowercase letters, a number, and a special character.</p>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Sign Up</button>
+    </form> <br>
+    <a href="/">Go Back to Home</a>
+--> 
