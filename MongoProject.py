@@ -65,44 +65,97 @@ def add_friend():
 
     if request.method == 'POST':
         friend_username = request.form.get('friend_username')
-        user_id = ObjectId(session['user_id'])
+        current_user_id = ObjectId(session['user_id'])
 
-        if friend_username:
-            # Prevent adding self as friend
-            current_user = db.users.find_one({'_id': user_id})
-            if current_user['username'] == friend_username:
-                return "You cannot add yourself as a friend."
+        # Fetch the current user's data
+        current_user = db.users.find_one({'_id': current_user_id})
 
-            # Find the friend's user document by username
-            friend = db.users.find_one({'username': friend_username})
+        if current_user['username'] == friend_username:
+            return "You cannot send a friend request to yourself."
 
-            if friend:
-                # Prevent duplicate friend entries
-                if friend['_id'] in current_user.get('friends', []):
-                    return "This user is already your friend."
+        # Find the potential friend's user document by username
+        friend = db.users.find_one({'username': friend_username})
+        if friend:
+            # Check if already friends
+            if friend['_id'] in current_user.get('friends', []):
+                return "This user is already your friend."
 
-                # Add friend's ID to the user's friend list
-                db.users.update_one(
-                    {'_id': user_id},
-                    {'$addToSet': {'friends': friend['_id']}}
-                )
-                return "Friend added successfully!"
-            else:
-                return "Friend not found"
+            # Check if a request has already been sent
+            if friend['_id'] in current_user.get('friend_requests', []):
+                return "A friend request has already been sent to this user."
+
+            # Add a friend request to the targeted user
+            db.users.update_one(
+                {'_id': friend['_id']},
+                {'$addToSet': {'friend_requests': current_user_id}}
+            )
+            return "Friend request sent!"
+        else:
+            return "User not found"
 
     return render_template('add_friend.html')
 
+@app.route('/accept_request/<requester_id>')
+def accept_request(requester_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    current_user_id = ObjectId(session['user_id'])
+    requester_id = ObjectId(requester_id)
+
+    # Add requester to the current user's friends list
+    db.users.update_one(
+        {'_id': current_user_id},
+        {'$addToSet': {'friends': requester_id}}
+    )
+
+    # Also, add the current user to the requester's friends list
+    db.users.update_one(
+        {'_id': requester_id},
+        {'$addToSet': {'friends': current_user_id}}
+    )
+
+    # Remove the friend request
+    db.users.update_one(
+        {'_id': current_user_id},
+        {'$pull': {'friend_requests': requester_id}}
+    )
+
+    return redirect(url_for('friends'))  # Redirect to the friends list page
+
+
+@app.route('/reject_request/<requester_id>')
+def reject_request(requester_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    current_user_id = ObjectId(session['user_id'])
+    requester_id = ObjectId(requester_id)
+
+    # Remove the friend request
+    db.users.update_one(
+        {'_id': current_user_id},
+        {'$pull': {'friend_requests': requester_id}}
+    )
+
+    return redirect(url_for('friends'))  # Redirect to the friends list page
+
+
 @app.route('/friends')
 def friends():
-    try:
-        # Assuming you have a collection named 'users'
-        users_collection = db.users
-        users_list = list(users_collection.find({}))
-        return render_template('friends.html', users=users_list)
-    except Exception as e:
-        # If an error occurs, print it to the console and return an error message
-        print("An error occurred:", e)
-        return "An error occurred fetching user data"
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    current_user_id = ObjectId(session['user_id'])
+    user = db.users.find_one({'_id': current_user_id})
+
+    # Fetch friends' information
+    friends = db.users.find({'_id': {'$in': user.get('friends', [])}})
+
+    # Fetch pending friend requests' information
+    friend_requests = db.users.find({'_id': {'$in': user.get('friend_requests', [])}})
+
+    return render_template('friends.html', friends=list(friends), friend_requests=list(friend_requests))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
