@@ -60,13 +60,24 @@
             <a href="/login">Login</a> | <a href="/signup">Sign Up</a>
         {% endif %}
     </div>
-    <h1>Home Page</h1>
+
+    <h1>Welcome to GuardGift</h1>
+
     {% if user %}
         <a href="/friends" class="friend-link">Go to Friend List</a>
         <a href="/add_friend" class="friend-link">Request a Friend</a>
     {% else %}
-        <a href="/signup" class="friend-link">Sign Up Here</a>
-        <a href="/login" class="friend-link">Login Here</a>
+        <div class="welcome-section">
+            <p>GuardGift is your go-to platform for connecting with others while maintaining privacy. 
+               Our goal is to make it easier for you to send gifts to your friends and colleagues 
+               without needing to know their personal addresses.</p>
+            <p>Imagine wanting to surprise a colleague with a gift card on their birthday. 
+               With GuardGift, you can send a gift securely and discreetly, 
+               ensuring that it reaches the right person without revealing any personal information.</p>
+            <p><strong>Why wait? Sign up now and start spreading joy!</strong></p>
+            <a href="/signup" class="friend-link">Sign Up Here</a>
+            <a href="/login" class="friend-link">Login Here</a>
+        </div>
     {% endif %}
 </body>
 </html>
