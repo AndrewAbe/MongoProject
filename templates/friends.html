@@ -2,14 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Users</title>
+    <title>Friends List</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .list {
+            width: 45%;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Friends List</h1>
-    <ul>
-        {% for user in users %}
-        <li>{{ user['firstName'] }} {{ user['lastName'] }}</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <!-- Friends List -->
+        <div class="list">
+            <h2>Friends</h2>
+            <ul>
+                {% for friend in friends %}
+                    <li>{{ friend.username }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Pending Friend Requests -->
+        <div class="list">
+            <h2>Pending Requests</h2>
+            <ul>
+                {% for request in friend_requests %}
+                    <li>
+                        {{ request.username }}
+                        <!-- Accept and Reject buttons (implement as needed) -->
+                        <a href="{{ url_for('accept_request', requester_id=request._id) }}">Accept</a>
+                        <a href="{{ url_for('reject_request', requester_id=request._id) }}">Reject</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
