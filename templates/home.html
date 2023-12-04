@@ -45,13 +45,37 @@
         .friend-link:hover {
             background-color: #45a049;
         }
+        .cart-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50; /* Green color for the cart button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .cart-button:hover {
+            background-color: #45a049;
+        }
     </style>
+    <script type="text/javascript">
+        function addToCart(itemName) {
+            if (!window.confirm('Add ' + itemName + ' to your cart?')) {
+                return;
+            }
+            // Send item to server to add to cart (use AJAX or a form submission)
+            // Example with a simple GET request:
+            window.location.href = "{{ url_for('add_to_cart') }}" + "?item=" + itemName;
+        }
+    </script>
 </head>
 <body>
     <div class="top-right">
         {% if user %}
             <span class="user_info">
                 Welcome, {{ user.username }}
+                <a href="/cart" class="cart-button">Cart</a>
                 <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
                     <button type="submit" class="logout-button">Logout</button>
                 </form>
@@ -66,6 +90,16 @@
     {% if user %}
         <a href="/friends" class="friend-link">Go to Friend List</a>
         <a href="/add_friend" class="friend-link">Request a Friend</a>
+        <div class="items-list">
+            <h2>Items for You</h2>
+            <ul>
+                <li>Item 1 <button onclick="addToCart('Item 1')">Add to Cart</button></li>
+                <li>Item 2 <button onclick="addToCart('Item 2')">Add to Cart</button></li>
+                <li>Item 3 <button onclick="addToCart('Item 3')">Add to Cart</button></li>
+                <li>Item 4 <button onclick="addToCart('Item 4')">Add to Cart</button></li>
+                <!-- Add more items as needed -->
+            </ul>
+        </div>
     {% else %}
         <div class="welcome-section">
             <p>GuardGift is your go-to platform for connecting with others while maintaining privacy. 
