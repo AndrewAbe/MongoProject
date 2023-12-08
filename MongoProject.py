@@ -4,6 +4,8 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from password_strength import PasswordPolicy
+import smtplib
+from email.mime.text import MIMEText
 import os
 import re
 
@@ -32,6 +34,127 @@ def home():
             user_data = {'username': user['username']}
 
     return render_template('home.html', user=user_data)
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+
+    # Fetch friends' user documents based on the IDs in the 'friends' list
+    friend_ids = user.get('friends', [])
+    friends = db.users.find({'_id': {'$in': friend_ids}})
+
+    return render_template('checkout.html', friends=list(friends))
+
+@app.route('/finalize_checkout', methods=['POST'])
+def finalize_checkout():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    friend_username = request.form.get('friend')
+
+    # Fetch the friend's email address from the database
+    friend = db.users.find_one({'username': friend_username})
+    if not friend or not friend.get('email'):
+        return "Friend's email address not found.", 400
+
+    # Prepare the email content (e.g., list of items in the cart)
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+    cart_items = ', '.join(user.get('cart', []))
+    email_content = f"Hello, {friend_username}! You've received the following items: {cart_items}."
+ 
+    # Send the email
+    try:
+        send_email(friend['email'], email_content)
+    except Exception as e:
+        print("Failed to send email:", e)
+        return "Failed to send email.", 500
+
+    # Clear the user's cart after sending the email
+    db.users.update_one({'_id': ObjectId(user_id)}, {'$set': {'cart': []}})
+
+    return redirect(url_for('home'))
+
+def send_email(to_email, content):
+    sender_email = "Put_Email_Here"
+    password = "16digitcode" #under google "app password", have to put dual auth to allow
+
+    msg = MIMEText(content)
+    msg['Subject'] = "You've Got a Gift!"
+    msg['From'] = sender_email
+    msg['To'] = to_email
+
+    # Send the message via an SMTP server
+    s = smtplib.SMTP('smtp.gmail.com', 587) #this is the gmail smtp email
+    s.starttls()
+    s.login(sender_email, password)
+    s.sendmail(sender_email, [to_email], msg.as_string())
+    s.quit()
+
+@app.route('/cart')
+def cart():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    user = db.users.find_one({'_id': ObjectId(user_id)})
+
+    cart_items = user.get('cart', [])
+    return render_template('cart.html', cart_items=cart_items)
+
+
+@app.route('/clear_cart')
+def clear_cart():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+
+    # Clear the cart in the user's document in the database
+    db.users.update_one(
+        {'_id': ObjectId(user_id)},
+        {'$set': {'cart': []}}
+    )
+
+    return redirect(url_for('cart'))
+
+@app.route('/remove_item_from_cart', methods=['POST'])
+def remove_item_from_cart():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    item_to_remove = request.form.get('item')
+    #print("Removing item:", item_to_remove)  # Debug print //fixed
+
+    # Remove the specified item from the user's cart
+    db.users.update_one(
+        {'_id': ObjectId(user_id)},
+        {'$pull': {'cart': item_to_remove}}
+    )
+
+    return redirect(url_for('cart'))
+
+
+@app.route('/add_to_cart')
+def add_to_cart():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    item = request.args.get('item')
+    user_id = session['user_id']
+
+    # Add the item to the user's cart in the database
+    db.users.update_one(
+        {'_id': ObjectId(user_id)},
+        {'$addToSet': {'cart': item}}
+    )
+
+    return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -140,7 +263,6 @@ def reject_request(requester_id):
 
     return redirect(url_for('friends'))  # Redirect to the friends list page
 
-
 @app.route('/friends')
 def friends():
     if 'user_id' not in session:
@@ -228,6 +350,6 @@ def signup():
 
 
 if __name__ == '__main__':
-    cert_path = "C:\\Users\\raemu\\Desktop\\MasterProj\\HTTPS Certs\\cert.pem"
-    key_path = "C:\\Users\\raemu\\Desktop\\MasterProj\\HTTPS Certs\\key.pem"
+    cert_path = "C:Pathway to HTTP cert \\cert.pem"
+    key_path = "C:Pathway to HTTP key\\key.pem"
     app.run(port=3000, ssl_context=(cert_path, key_path))
