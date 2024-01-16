@@ -4,61 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuardGift Home</title>
-    <style>
-        
-        body {
-            text-align: center; /* Centers the content */
-            margin-top: 50px; /* Adds some space at the top of the page */
-        }
-        .top-right {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            text-align: right;
-        }
-        .user_info {
-            display: inline-block; /* Align username and button inline */
-        }
-        .logout-button {
-            margin-left: 10px;
-            padding: 5px 10px;
-            background-color: #f44336; /* Red color for the logout button */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .logout-button:hover {
-            background-color: #d32f2f;
-        }
-        .friend-link {
-            display: inline-block;
-            margin: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50; /* Green background */
-            color: white; /* White text */
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        .friend-link:hover {
-            background-color: #45a049;
-        }
-        .cart-button {
-            margin-left: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50; /* Green color for the cart button */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .cart-button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script type="text/javascript">
         function addToCart(itemName) {
             if (!window.confirm('Add ' + itemName + ' to your cart?')) {
@@ -92,7 +38,7 @@
         <a href="/add_friend" class="friend-link">Request a Friend</a>
         <div class="items-list">
             <h2>Items for You</h2>
-            <ul>
+            <ul class="no-bullets">
                 <li>Item 1 <button onclick="addToCart('Item 1')">Add to Cart</button></li>
                 <li>Item 2 <button onclick="addToCart('Item 2')">Add to Cart</button></li>
                 <li>Item 3 <button onclick="addToCart('Item 3')">Add to Cart</button></li>
@@ -102,11 +48,11 @@
         </div>
     {% else %}
         <div class="welcome-section">
-            <p>GuardGift is your go-to platform for connecting with others while maintaining privacy. 
-               Our goal is to make it easier for you to send gifts to your friends and colleagues 
+            <p>GuardGift is your go-to platform for connecting with others while maintaining privacy.</p> 
+            <p>Our goal is to make it easier for you to send gifts to your friends and colleagues 
                without needing to know their personal addresses.</p>
-            <p>Imagine wanting to surprise a colleague with a gift card on their birthday. 
-               With GuardGift, you can send a gift securely and discreetly, 
+            <p>Imagine wanting to surprise a colleague with a gift card on their birthday. </p> 
+            <p>With GuardGift, you can send a gift securely and discreetly, 
                ensuring that it reaches the right person without revealing any personal information.</p>
             <p><strong>Why wait? Sign up now and start spreading joy!</strong></p>
             <a href="/signup" class="friend-link">Sign Up Here</a>
