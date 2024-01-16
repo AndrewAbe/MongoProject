@@ -24,7 +24,7 @@ body {
     background-color: #d32f2f;
 }
 .friend-link {
-    display: inline-block;
+    display: inline;
     margin: 20px;
     padding: 10px 20px;
     background-color: #4CAF50; /* Green background */
@@ -110,9 +110,38 @@ button:hover {
     justify-content: space-around;
     padding: 20px;
 }
+.container-signup {
+    margin: 0 auto;
+    width: auto; 
+}
 .list {
     width: 45%;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
+}
+.form-item {
+    margin-bottom: 10px;
+}
+.back-button {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+}
+.back-button-container {
+    text-align: center; 
+    margin-top: 20px;
+}
+ul.no-bullets {
+    list-style-type: none; /* Removes the bullet points */
+    padding-left: 0;      /* Removes the default padding */
+}
+li {
+    padding: 5px 0; /* Adds some vertical spacing between list items */
 }
