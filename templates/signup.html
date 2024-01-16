@@ -24,10 +24,10 @@
         <p>You must be at least 10 years old to sign up.</p>
         <form action="{{ url_for('signup') }}" method="post">
             <div class="form-item">
-                <input type="text" name="first_name" placeholder="First Name" required>
+                <input type="text" name="first_name" placeholder="First Name" pattern="[A-Za-z ]+" required>
             </div>
             <div class="form-item">
-                <input type="text" name="last_name" placeholder="Last Name" required>
+                <input type="text" name="last_name" placeholder="Last Name" pattern="[A-Za-z ]+" required>
             </div>
             <div class="form-item">
                 <input type="text" name="username" placeholder="Username" required>
