@@ -350,6 +350,6 @@ def signup():
 
 
 if __name__ == '__main__':
-    cert_path = "C:Pathway to HTTP cert \\cert.pem"
-    key_path = "C:Pathway to HTTP key\\key.pem"
+    #cert_path = "C:Pathway to HTTP cert \\cert.pem"
+    #key_path = "C:Pathway to HTTP key\\key.pem"
     app.run(port=3000, ssl_context=(cert_path, key_path))
